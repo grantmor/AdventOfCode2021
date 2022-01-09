@@ -1,0 +1,92 @@
+import sys
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+class Line:
+    def __init__(self, p1, p2):
+        self.p1 = p1
+        self.p2 = p2
+
+class Grid:
+    def __init__(self, width, depth):
+        self.width = width
+        self.depth = depth
+        self.data = [] 
+
+        for row in range(0, depth):
+            self.data.append([0] * width)
+    
+    def draw_hv_line(self, p1, p2):
+        print('drawing line')
+        if  p1.x == p2.x:
+            #print(f'range: {len(range(p1.y, p2.y + 1))}\n')
+            if p1.y - p2.y < 0: # still need to check for length 1
+                yRange = range(p1.y, p2.y + 1)
+            else:
+                yRange = range(p2.y, p1.y + 1)
+
+            for yCoord in yRange:
+                
+                print(f'coord: {yCoord}')
+                print(f'xcoord: {p1.x}, y coord: {yCoord}')
+
+                #self.data[p1.x][yCoord] += 1
+
+                self.data[p1.x][yCoord] += 1
+        elif p1.y == p2.y:
+            print('drawing line')
+            if p1.x - p2.x < 0: # still need to check for length 1
+                xRange = range(p1.x, p2.x + 1)
+            else:
+                xRange = range(p2.x, p1.x + 1)
+            #print(f'range: {range(p1.x, p2.x + 1)}\n')
+            for xCoord in xRange:
+                #self.data[xCoord][p1.y] += 1
+                self.data[xCoord][p1.y]+= 1
+
+def parse_line(line):
+    one, arrow, two = line.split(' ')
+
+    p1 = list(map(int, one.split(',')))
+    p2 = list(map(int, two.split(',')))
+
+    p1 = Point(p1[0], p1[1])
+    p2 = Point(p2[0], p2[1])
+
+    return Line(p1, p2)
+    
+def read_input():
+    with open(sys.argv[1] ,'r') as file:
+        input = file.read().strip().split('\n')
+    return input
+    
+
+input = read_input()
+grid = Grid(len(input), len(input[0]))
+
+
+for line in input:
+    print(line)
+
+lines = list(map(parse_line, input))
+        
+for line in lines:
+    p1 = line.p1
+    p2 = line.p2
+
+    grid.draw_hv_line(p1, p2)
+
+for row in grid.data:
+    print(row)
+
+overlaps = 0
+
+for row in grid.data:
+    for cell in row:
+        if cell >= 2:
+            overlaps += 1
+
+print(f'overlaps: {overlaps}')
